@@ -210,3 +210,231 @@ class _WeatherScreenState extends State<WeatherScreen>
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+---------------x--------------------------x----------------------------------------x----------------------------------------x--------------
+
+
+
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Trivia Quiz Game',
+      theme: ThemeData.dark().copyWith(
+        primaryColor: Colors.blue,
+        scaffoldBackgroundColor: Colors.black,
+        textTheme: TextTheme(
+          bodyText1: TextStyle(fontSize: 18.0, color: Colors.white),
+          bodyText2: TextStyle(fontSize: 18.0, color: Colors.white),
+          headline6: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.blue,
+          textTheme: ButtonTextTheme.primary,
+        ),
+      ),
+      home: HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Trivia Quiz Game'),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.black, Colors.blue.shade700],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to quiz screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => QuizScreen(category: "General Knowledge")),
+                  );
+                },
+                child: Text('Start General Knowledge Quiz', style: TextStyle(fontSize: 20)),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to quiz screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => QuizScreen(category: "Sports")),
+                  );
+                },
+                child: Text('Start Sports Quiz', style: TextStyle(fontSize: 20)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class QuizScreen extends StatefulWidget {
+  final String category;
+  QuizScreen({required this.category});
+
+  @override
+  _QuizScreenState createState() => _QuizScreenState();
+}
+
+class _QuizScreenState extends State<QuizScreen> {
+  int _currentQuestionIndex = 0;
+  int _score = 0;
+  final List<Map<String, Object>> _questions = [
+    {
+      'question': 'What is the capital of France?',
+      'answers': ['Berlin', 'Madrid', 'Paris', 'Rome'],
+      'correctAnswer': 'Paris',
+    },
+    {
+      'question': 'Who wrote the play "Romeo and Juliet"?',
+      'answers': ['Shakespeare', 'Dickens', 'Hemingway', 'Austen'],
+      'correctAnswer': 'Shakespeare',
+    },
+    {
+      'question': 'Which planet is known as the Red Planet?',
+      'answers': ['Earth', 'Mars', 'Jupiter', 'Saturn'],
+      'correctAnswer': 'Mars',
+    },
+    {
+      'question': 'Who painted the Mona Lisa?',
+      'answers': ['Van Gogh', 'Da Vinci', 'Picasso', 'Rembrandt'],
+      'correctAnswer': 'Da Vinci',
+    },
+  ];
+
+  void _answerQuestion(String answer) {
+    if (answer == _questions[_currentQuestionIndex]['correctAnswer']) {
+      setState(() {
+        _score++;
+      });
+    }
+    setState(() {
+      if (_currentQuestionIndex < _questions.length - 1) {
+        _currentQuestionIndex++;
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ScoreScreen(score: _score),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.category),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.black, Colors.blue.shade700],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                _questions[_currentQuestionIndex]['question'] as String,
+                style: TextStyle(fontSize: 24, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            ...(_questions[_currentQuestionIndex]['answers'] as List<String>)
+                .map((answer) => ElevatedButton(
+                      onPressed: () => _answerQuestion(answer),
+                      child: Text(answer, style: TextStyle(fontSize: 18)),
+                    ))
+                .toList(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ScoreScreen extends StatelessWidget {
+  final int score;
+  ScoreScreen({required this.score});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Your Score'),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.black, Colors.blue.shade700],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Your Score: $score',
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate back to home screen
+                  Navigator.pop(context);
+                },
+                child: Text('Go Back', style: TextStyle(fontSize: 20)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
